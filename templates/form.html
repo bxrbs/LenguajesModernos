@@ -10,21 +10,22 @@
 </head>
 <body>
     <div>
-        <h2>Agrega música^^</h2>
+        <h2>{{ 'Editando música' if contact_to_edit else 'Agrega música^^' }}</h2>
         <br>
-        <form action="/" method="post">
+        <form action="{{ url_for('update', id=contact_to_edit.ID) if contact_to_edit else '/' }}" method="POST">
+            {% if contact_to_edit %}
+                <input type="hidden" name="id" value="{{ contact_to_edit.ID }}">
+            {% endif %}
             <div class="input-group">
-                <!--<label for="album">Album: </label>-->
-                <input type="text" id="album" class="form-control" name="album" required placeholder="Album">
+                <input type="text" id="album" class="form-control" name="album" required placeholder="Álbum" value="{{ contact_to_edit.album if contact_to_edit else '' }}">
             </div>
             <div class="input-group">
-                <!--<label for="artista">Artista: </label>-->
-                <input type="text" id="artista" class="form-control" name="artista" required placeholder="Artista">
+                <input type="text" id="artista" class="form-control" name="artista" required placeholder="Artista" value="{{ contact_to_edit.artista if contact_to_edit else '' }}">
             </div>
             <br>
-            <button type="submit" class="btn btn-warning">agregar</button>
+            <button type="submit" class="btn btn-primary">{{ 'Actualizar' if contact_to_edit else 'Agregar' }}</button>
+
         </form>
-        
         
         <div>
             <br>
@@ -43,6 +44,14 @@
                         <td>{{registro.ID}}</td>
                         <td>{{registro.album}}</td>
                         <td>{{registro.artista}}</td>
+                        <td>
+                            <a href="{{ url_for('edit', id=registro.ID) }}" class="btn btn-info">editar</a>
+                        </td>
+                        <td>
+                            <form action="/delete/{{ registro.ID }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger">eliminar</button>
+                            </form>
+                        </td>
                     </tr>
                     {%endfor%}
                 </tbody>
